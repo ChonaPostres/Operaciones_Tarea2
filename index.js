@@ -57,8 +57,8 @@ function initCasoFeria() {
 function iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos) {
     var sumatoria = 0;
     for (let i = 0 ; i < (n-1) ; i++) {
-        for (let j = 0 ; j < n ; j++) {
-            sumatoria+= calcularDistancia(i,j, tamanio_ferias) * cant_clientes_por_ambos_puestos[i][j];
+        for (let j = (i+1) ; j < n ; j++) {
+            sumatoria = sumatoria + calcularDistancia(i,j, tamanio_ferias) * cant_clientes_por_ambos_puestos[i][j];
         }
     }
     return sumatoria;
@@ -66,8 +66,9 @@ function iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos) {
 function calcularDistancia(i,j, tamanio_ferias) {
     sumatoria = 0;
     for (let k = (i+1); k < (j-1) ; k++) {
-        sumatoria+= tamanio_ferias[k];
+        sumatoria = sumatoria + tamanio_ferias[k];
     }
+    //console.log((tamanio_ferias[i]/2) + sumatoria + (tamanio_ferias[j]/2));
     return ((tamanio_ferias[i]/2) + sumatoria + (tamanio_ferias[j]/2));
 }
 initCasoFeria();
