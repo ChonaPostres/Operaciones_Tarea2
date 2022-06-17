@@ -2,9 +2,6 @@ const fs = require("fs");
 
 
 function initCasoFeria() {
-    //var files = fs.readdirSync('./instancias/');
-    
-    //for (let index = 1 ; index < 3 ; index++) {
     console.log("Ingrese nombre del archivo: ");
     process.stdin.on('data', function(data){
         var files = data.toString().trim();
@@ -50,14 +47,27 @@ function initCasoFeria() {
         console.log("matriz: "+(cant_clientes_por_ambos_puestos.length*cant_clientes_por_ambos_puestos.length))
         console.log("cant_clientes_por_ambos_puestos:");
         console.log(cant_clientes_por_ambos_puestos);
+        var resultado = iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos);
+        console.log("Resultado: "+resultado);
         process.exit();
-    }) 
+    })
     
-        
-        //console.log("cant_clientes_por_ambos_puestos: "+cant_clientes_por_ambos_puestos.length);
-        //console.log(cant_clientes_por_ambos_puestos);
-    //}
 
 }
-
+function iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos) {
+    var sumatoria = 0;
+    for (let i = 0 ; i < (n-1) ; i++) {
+        for (let j = 0 ; j < n ; j++) {
+            sumatoria+= calcularDistancia(i,j, tamanio_ferias) * cant_clientes_por_ambos_puestos[i][j];
+        }
+    }
+    return sumatoria;
+}
+function calcularDistancia(i,j, tamanio_ferias) {
+    sumatoria = 0;
+    for (let k = (i+1); k < (j-1) ; k++) {
+        sumatoria+= tamanio_ferias[k];
+    }
+    return ((tamanio_ferias[i]/2) + sumatoria + (tamanio_ferias[j]/2));
+}
 initCasoFeria();
