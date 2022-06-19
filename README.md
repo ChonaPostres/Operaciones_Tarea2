@@ -2,6 +2,7 @@
 Ejercicio Metaheuristica
 
 Archivos para ejecutar:
+- S5.txt
 - S8
 - S10
 - QAP_sko56_04_n.txt

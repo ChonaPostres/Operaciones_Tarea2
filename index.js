@@ -1,74 +1,114 @@
 const fs = require("fs");
+const separator = "[Metaheuristica] - ------------------------------------------------------------------------------------------";
 
 
 function initCasoFeria() {
     console.log("Ingrese nombre del archivo: ");
     process.stdin.on('data', function(data){
-        var files = data.toString().trim();
-        let index = 3;
-        console.log(files);
-        var texto =  fs.readFileSync("./instancias/"+files, "utf-8");
-        var texto = texto.split('\n');
-        //console.log(texto)
-        var n = parseInt(texto[0]);
-        var tamanio_ferias = new Array();
-        var texto_split = texto[1].split(',');
-        //console.log(texto_split);
-        for (let i = 0 ; i < texto_split.length ; i++) {
-            tamanio_ferias[i] = parseInt(texto_split[i]);
+        var filename = data.toString().trim();
+        console.log("[Metaheuristica] - ["+ filename + "]");
+        console.log("[Metaheuristica] - Iniciando Lectura de archivo");
+        console.log(separator)
+        var texto = readFile(filename);
+        if (texto) {
+            // Lectura de N
+            var n = parseInt(texto[0]);
+            // Lectura de tamaño de las ferias
+            var tamanio_ferias = new Array();
+            tamanio_ferias = lecturaTamanioFerias(texto);
+            
+            console.log("[Metaheuristica] - Caso con "+n+" ferias");
+            console.log(separator)
+            // Lectura de la cantidad de clientes por ambos puestos (ferias)
+            var cant_clientes_por_ambos_puestos = new Array();
+            var lectura = new Array()
+            lectura = lecturaDeClientesPorAmbosPuestos(texto);
+            cant_clientes_por_ambos_puestos = llenadoDeMatrizClientesPorAmbosPuestos(lectura, n);
+            
+            //console.log(n);
+            //console.log(tamanio_ferias);
+            //console.log(cant_clientes_por_ambos_puestos);
+            
+            console.log(separator);
+            console.log("[Metaheuristica] - Matriz clientes por ambos puestos: "+(cant_clientes_por_ambos_puestos.length*cant_clientes_por_ambos_puestos.length))
+            console.log(separator);
+            //var resultado = iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos);
+            //console.log("Resultado: "+resultado);
         }
-        console.log("Iniciando Lectura de archivos........................");
-        console.log("Caso con "+n+" ferias");
-        console.log("n:");
-        console.log(n);
-        console.log("tamanio_ferias");
-        console.log(tamanio_ferias);
-        var cant_clientes_por_ambos_puestos = new Array();
-        var result = new Array()
-        cont = 0;
-        for (let i = 2 ; i < texto.length-1 ; i++) {
-            columnas = texto[i].split(',');
-            for (j = 0 ; j < columnas.length ; j++) {
-                result[cont] = parseInt(columnas[j]);
-                cont++;
-            }
-        }
-        //console.log(result);
-        cont = 0
-        for (let i = 0 ; i < n ; i++) {
-            cant_clientes_por_ambos_puestos[i] = new Array();
-            //console.log("-----------");
-            for (let j = 0 ; j < n ; j++) {
-                cant_clientes_por_ambos_puestos[i][j] = result[cont];
-                //console.log(cant_clientes_por_ambos_puestos[i][j]);
-                cont++;
-            }
-        }
-        console.log("matriz: "+(cant_clientes_por_ambos_puestos.length*cant_clientes_por_ambos_puestos.length))
-        console.log("cant_clientes_por_ambos_puestos:");
-        console.log(cant_clientes_por_ambos_puestos);
-        var resultado = iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos);
-        console.log("Resultado: "+resultado);
+        console.log("[Metaheuristica] - Fin del proceso");
         process.exit();
     })
     
 
 }
+function readFile(file) {
+    try {
+        var texto =  fs.readFileSync("./instancias/"+file, "utf-8");
+        return texto = texto.split('\n');
+    } catch(err) {
+        console.log("[Metaheuristica] - No se encuentra el archivo en la carpeta instancias");
+    }
+    
+}
+function lecturaTamanioFerias(texto) {
+    var lectura = new Array();
+    var texto_split = texto[1].split(',');
+    for (let i = 0 ; i < texto_split.length ; i++) {
+        lectura[i] = parseInt(texto_split[i]);
+    }
+    return lectura;
+}
+function lecturaDeClientesPorAmbosPuestos(texto) {
+    var result = new Array();
+    cont = 0;
+    for (let i = 2 ; i < texto.length-1 ; i++) {
+        columnas = texto[i].split(',');
+        for (j = 0 ; j < columnas.length ; j++) {
+            result[cont] = parseInt(columnas[j]);
+            cont++;
+        }
+    }
+    return result;
+}
+function llenadoDeMatrizClientesPorAmbosPuestos(cant_clientes, n) {
+    var matriz = new Array();
+    cont = 0
+    for (let i = 0 ; i < n ; i++) {
+        matriz[i] = new Array();
+        for (let j = 0 ; j < n ; j++) {
+            matriz[i][j] = cant_clientes[cont];
+            cont++;
+        }
+    }
+    return matriz;
+}
 function iniciarBusqueda(n, tamanio_ferias, cant_clientes_por_ambos_puestos) {
     var sumatoria = 0;
+    var distancia = 0;
     for (let i = 0 ; i < (n-1) ; i++) {
         for (let j = (i+1) ; j < n ; j++) {
-            sumatoria = sumatoria + calcularDistancia(i,j, tamanio_ferias) * cant_clientes_por_ambos_puestos[i][j];
+            //console.log("calculo()");
+            //console.log(`i = ${i} , j = ${j}`);
+            distancia = calcularDistancia(i,j, tamanio_ferias)
+            var suma = sumatoria;
+            sumatoria = sumatoria + (distancia * cant_clientes_por_ambos_puestos[i][j]);
+            //console.log(`(${distancia} * ${cant_clientes_por_ambos_puestos[i][j]}) + ${suma} = ${sumatoria}`);
         }
     }
     return sumatoria;
 }
 function calcularDistancia(i,j, tamanio_ferias) {
     sumatoria = 0;
-    for (let k = (i+1); k < (j-1) ; k++) {
+    n = j-1;
+    for (let k = (i+1); k <= n ; k++) {
+        var suma = sumatoria
         sumatoria = sumatoria + tamanio_ferias[k];
+        //console.log("calcularDistancia()");
+        //console.log(`k = ${k}, n = ${n}`);
+        //console.log(`(${suma} + ${tamanio_ferias[k]}) = ${sumatoria}`);
     }
-    //console.log((tamanio_ferias[i]/2) + sumatoria + (tamanio_ferias[j]/2));
-    return ((tamanio_ferias[i]/2) + sumatoria + (tamanio_ferias[j]/2));
+    var result = ((tamanio_ferias[i]/2) + sumatoria + (tamanio_ferias[j]/2));
+    //console.log(`${tamanio_ferias[i]/2} + ${sumatoria} + ${tamanio_ferias[j]/2} = ${result}`);
+    return result;
 }
 initCasoFeria();
