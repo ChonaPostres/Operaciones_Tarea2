@@ -1,5 +1,8 @@
 # Operaciones_Tarea2
-Ejercicio Metaheuristica
+Ejercicio Metaheuristica PSO 
+ 
+Para correr el programa usar el siguiente comando
+**python main.py**
 
 Archivos para ejecutar:
 - S5.txt
