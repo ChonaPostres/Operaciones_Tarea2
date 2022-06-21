@@ -1,10 +1,10 @@
 # Operaciones_Tarea2
-Ejercicio Metaheuristica PSO 
+**Ejercicio Metaheuristica PSO**
  
 Para correr el programa usar el siguiente comando
-**python main.py**
+`$ python main.py`
 
-Archivos para ejecutar:
+**Archivos para ejecutar:**
 - S5.txt
 - S8
 - S10
@@ -13,7 +13,7 @@ Archivos para ejecutar:
 - SRFLP_Rubio_AnKeVa_500_03.txt
 - SRFLP2_N_110_L_5_14_F_0_100.txt
 
-Integrantes:
+**Integrantes:**
 - Ignacio Araya 20.481.462-7 
 - Nicolas Leiva 20.175.030-k
 - Andrea Pérez 20.655.853-9
